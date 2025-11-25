@@ -1,7 +1,7 @@
 ﻿<Solution>
+  <Project Path="UnityEngine.UI.csproj" />
   <Project Path="Unity.RenderPipelines.Core.Runtime.csproj" />
   <Project Path="UnityEngine.TestRunner.csproj" />
-  <Project Path="UnityEngine.UI.csproj" />
   <Project Path="Unity.Mathematics.csproj" />
   <Project Path="Unity.InputSystem.csproj" />
   <Project Path="Unity.RenderPipelines.Universal.Runtime.csproj" />
