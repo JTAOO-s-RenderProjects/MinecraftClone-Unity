@@ -54,7 +54,7 @@ namespace Minecraft
             m_GetBuildedChunkCallback = null;
             m_World = world;
 
-            m_ChunkBuilder.Initialize(world);
+            m_ChunkBuilder.Initialize(world); // world填入之后 m_ChunkBuilder的update就开始执行
             m_Chunks.OnValueRemoved += OnWillUnloadChunk;
         }
 

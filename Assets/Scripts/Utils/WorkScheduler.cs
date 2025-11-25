@@ -15,6 +15,9 @@ namespace Minecraft.Utils
         private bool m_IsAlive;
 
 
+        /// <summary>
+        /// mono的自动start
+        /// </summary>
         private void Start()
         {
             m_MainThreadWorks = new List<TMainThreadWork>();
@@ -26,9 +29,12 @@ namespace Minecraft.Utils
             OnInitialize();
         }
 
+        /// <summary>
+        /// jtaoo: 创建地图的入口
+        /// </summary>
         protected void StartWorkerThread()
         {
-            m_WorkerThread.Start();
+            m_WorkerThread.Start(); // DoAsyncWorks()函数
         }
 
         private void OnDestroy()
@@ -40,11 +46,13 @@ namespace Minecraft.Utils
 
         protected void AddWork(in TMainThreadWork work)
         {
+            Debug.Log($"AddWork(in TMainThreadWork work)");
             m_MainThreadWorks.Add(work);
         }
 
         protected void AddWork(in TAsyncWork work)
         {
+            Debug.Log($"AddWork(in TAsyncWork work)");
             bool lockTaken = false;
 
             try
@@ -92,7 +100,7 @@ namespace Minecraft.Utils
                 return;
             }
 
-            DoMainThreadWorks(m_MainThreadWorks);
+            DoMainThreadWorks(m_MainThreadWorks); // 建立mesh之类...
         }
 
         private bool GetNextAsyncWork(out TAsyncWork work)

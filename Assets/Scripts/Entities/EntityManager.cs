@@ -57,6 +57,9 @@ namespace Minecraft.Entities
             }
         }
 
+        /// <summary>
+        /// 初始化之后就开始运行
+        /// </summary>
         private void Update()
         {
             if (m_RenderableEntities != null)

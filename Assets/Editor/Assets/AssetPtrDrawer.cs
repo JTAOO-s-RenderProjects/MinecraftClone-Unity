@@ -7,6 +7,9 @@ using Object = UnityEngine.Object;
 
 namespace MinecraftEditor.Assets
 {
+    /// <summary>
+    /// jtaoo: AssetPtr的Drawer, 可以根据EnsureAssetTypeAttribute的类型显示成对应的object GUI
+    /// </summary>
     [CustomPropertyDrawer(typeof(AssetPtr), true)]
     public class AssetPtrDrawer : PropertyDrawer
     {
@@ -24,6 +27,7 @@ namespace MinecraftEditor.Assets
 
         private Type GetAssetType()
         {
+            // 第一次进来的初始化流程
             if (m_AssetType == null)
             {
                 EnsureAssetTypeAttribute assetType = fieldInfo.GetCustomAttribute<EnsureAssetTypeAttribute>();
@@ -40,8 +44,8 @@ namespace MinecraftEditor.Assets
                         Debug.LogError($"Invalid AssetType: {assetType.AssetType}, it must be derived from UnityEngine.Object.");
                     }
                 }
-            }
-
+            }   
+            // 初始化过后就直接返回就行
             return m_AssetType;
         }
     }

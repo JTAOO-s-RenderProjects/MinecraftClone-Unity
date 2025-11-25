@@ -48,6 +48,10 @@ namespace Minecraft.Configurations
             AssetManager.Instance.UnloadAsset(m_BlockMaterialTableJson);
         }
 
+        /// <summary>
+        /// 把lua里面定义的行为链接到block, 并调用init函数
+        /// </summary>
+        /// <param name="world"></param>
         public void LoadBlockBehavioursInLua(IWorld world)
         {
             m_BlockBehaviors = new IBlockBehaviour[m_Blocks.Length];
@@ -56,7 +60,11 @@ namespace Minecraft.Configurations
             {
                 ref IBlockBehaviour behaviour = ref m_BlockBehaviors[i];
                 behaviour = world.LuaManager.GetLuaGlobal<IBlockBehaviour>(m_Blocks[i].InternalName);
-                behaviour?.init(world, m_Blocks[i]);
+                if (behaviour != null)
+                {
+                    behaviour?.init(world, m_Blocks[i]);
+                    Debug.Log($"LoadBlockBehavioursInLua() behaviour: {m_Blocks[i].InternalName}");
+                }
             }
         }
 

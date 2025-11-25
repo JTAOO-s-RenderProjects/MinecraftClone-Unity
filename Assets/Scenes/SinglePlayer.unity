@@ -2132,7 +2132,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Setting:
-    RenderingRadius: 12
+    RenderingRadius: 4
     MinLightLimit: 0.5
     MaxLightLimit: 1
     CastShadows: 1

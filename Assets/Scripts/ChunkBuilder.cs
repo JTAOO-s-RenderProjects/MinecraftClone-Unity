@@ -12,6 +12,9 @@ using static Minecraft.WorldConsts;
 
 namespace Minecraft
 {
+    /// <summary>
+    /// 区块构建器
+    /// </summary>
     [DisallowMultipleComponent]
     public class ChunkBuilder : WorkScheduler<ChunkBuilder.Empty, ChunkPos>, ILuaCallCSharp
     {
@@ -77,6 +80,10 @@ namespace Minecraft
 
         protected override void DoMainThreadWorks(List<Empty> works) { }
 
+        /// <summary>
+        /// 构建一个chunk的数据
+        /// </summary>
+        /// <param name="pos"></param>
         protected override void DoAsyncWork(in ChunkPos pos)
         {
             if (!m_ChunkPool.TryTake(out Chunk chunk))

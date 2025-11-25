@@ -70,6 +70,15 @@ namespace Minecraft
             Array.Clear(m_HeightMap, 0, m_HeightMap.Length);
         }
 
+        /// <summary>
+        /// jtaoo: 把chunk内部的数据对象暴露出去
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="world"></param>
+        /// <param name="blocks"></param>
+        /// <param name="rotations"></param>
+        /// <param name="skyLights"></param>
+        /// <param name="heightMap"></param>
         public void GetRawDataNoCheck(out ChunkPos pos, out IWorld world, out BlockData[,,] blocks, out Quaternion[,,] rotations, out NibbleArray skyLights, out byte[,] heightMap)
         {
             pos = m_Position;

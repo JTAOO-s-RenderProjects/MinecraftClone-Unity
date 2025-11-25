@@ -20,8 +20,8 @@ namespace Minecraft.Lua
 
         public IEnumerator Initialize()
         {
-            m_LuaEnv = new LuaEnv();
-            m_LuaEnv.AddLoader(LoadLuaFile);
+            m_LuaEnv = new LuaEnv(); // 创建env
+            m_LuaEnv.AddLoader(LoadLuaFile); // loader函数
             m_LuaFileAssets = new List<AsyncAsset>();
             m_LuaFileMap = new Dictionary<string, LuaAsset>();
 

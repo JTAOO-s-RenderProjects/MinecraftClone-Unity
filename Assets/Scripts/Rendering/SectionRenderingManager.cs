@@ -22,6 +22,9 @@ namespace Minecraft.Rendering
         [Serializable]
         public class RenderingSetting
         {
+            /// <summary>
+            /// 最小渲染的区块数量半径
+            /// </summary>
             [Range(4, 16)] public int RenderingRadius = 9;
             [Range(0, 0.5f)] public float MinLightLimit = 0.1f;
             [Range(0.5f, 1)] public float MaxLightLimit = 1;
@@ -92,6 +95,9 @@ namespace Minecraft.Rendering
             Debug.Assert(length == 0);
         }
 
+        /// <summary>
+        /// 初始化之后就开始运行
+        /// </summary>
         private void Update()
         {
             if (!m_Initialized)

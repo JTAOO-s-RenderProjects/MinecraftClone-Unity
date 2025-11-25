@@ -21,6 +21,7 @@ namespace Minecraft
             m_BlocksToLightQueue = new Stack<Vector3Int>();
             m_ImportantBlocksToLightQueue = new Stack<Vector3Int>();
             m_BlocksToTickQueue = new Queue<Vector3Int>();
+            // 启动角色
             StartCoroutine(EnablePlayer());
         }
 

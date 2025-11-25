@@ -135,7 +135,7 @@ namespace Minecraft
 
             yield return LuaManager.Initialize();
             ChunkManager.Initialize(this);
-            RenderingManager.Initialize(this);
+            RenderingManager.Initialize(this); // 初始化之后就开始运行update
             m_EntityManager.Initialize();
 
             // 执行子类的初始化函数
@@ -143,11 +143,11 @@ namespace Minecraft
 
             m_RWAccessor = new DefaultWorldRWAccessor(this);
             m_Initialized = true;
-            Active = this;
+            Active = this; // 设置world单例
 
             // Lua
-            LuaManager.ExecuteLuaScripts();
-            BlockDataTable.LoadBlockBehavioursInLua(this);
+            LuaManager.ExecuteLuaScripts(); // 把lua预写的block行为载入
+            BlockDataTable.LoadBlockBehavioursInLua(this); // 把lua里面定义的行为链接到block, 并调用init函数
         }
 
         private void OnDestroy()
