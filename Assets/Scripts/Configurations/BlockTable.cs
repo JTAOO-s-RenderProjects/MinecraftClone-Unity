@@ -12,17 +12,16 @@ namespace Minecraft.Configurations
     [CreateAssetMenu(menuName = "Minecraft/Configurations/BlockTable")]
     public class BlockTable : ScriptableObject, IDisposable, ILuaCallCSharp
     {
-        [SerializeField] [EnsureAssetType(typeof(TextAsset))] private AssetPtr m_BlockTableJson;
-        [SerializeField] [EnsureAssetType(typeof(TextAsset))] private AssetPtr m_BlockMeshTableJson;
-        [SerializeField] [EnsureAssetType(typeof(TextAsset))] private AssetPtr m_BlockTextureTableJson;
-        [SerializeField] [EnsureAssetType(typeof(TextAsset))] private AssetPtr m_BlockMaterialTableJson;
+        [SerializeField][EnsureAssetType(typeof(TextAsset))] private AssetPtr m_BlockTableJson;
+        [SerializeField][EnsureAssetType(typeof(TextAsset))] private AssetPtr m_BlockMeshTableJson;
+        [SerializeField][EnsureAssetType(typeof(TextAsset))] private AssetPtr m_BlockTextureTableJson;
+        [SerializeField][EnsureAssetType(typeof(TextAsset))] private AssetPtr m_BlockMaterialTableJson;
 
         [NonSerialized] private BlockData[] m_Blocks;
         [NonSerialized] private Dictionary<string, BlockData> m_BlockMap;
         [NonSerialized] private IBlockBehaviour[] m_BlockBehaviors;
         [NonSerialized] private AssetPtr[] m_BlockMeshPtrs;
         [NonSerialized] private BlockMesh[] m_BlockMeshes;
-        [NonSerialized] private AssetPtr[] m_TexturePtrs;
         [NonSerialized] private Texture2DArray m_TextureArray;
         [NonSerialized] private AssetPtr[] m_MaterialPtrs;
         [NonSerialized] private Material[] m_Materials;
@@ -31,6 +30,10 @@ namespace Minecraft.Configurations
 
         public int MaterialCount => m_Materials.Length;
 
+        /// <summary>
+        /// 初始化资源
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator Initialize()
         {
             yield return InitBlocks();
@@ -38,6 +41,7 @@ namespace Minecraft.Configurations
             yield return InitTextures();
             yield return InitMaterials();
 
+            // 各个table在加载之后都不需要了
             AssetManager.Instance.UnloadAsset(m_BlockTableJson);
             AssetManager.Instance.UnloadAsset(m_BlockMeshTableJson);
             AssetManager.Instance.UnloadAsset(m_BlockTextureTableJson);
@@ -72,12 +76,15 @@ namespace Minecraft.Configurations
 
         private IEnumerator InitBlocks()
         {
+            // 这个ScriptableObject本身只存储的对应table的GUID, 这里才正式加载进来
             AsyncAsset json = AssetManager.Instance.LoadAsset<TextAsset>(m_BlockTableJson);
             yield return json;
 
+            // json解密成BlockData[]类型
             m_Blocks = JsonConvert.DeserializeObject<BlockData[]>(json.GetAssetAs<TextAsset>().text);
-            m_BlockMap = new Dictionary<string, BlockData>(m_Blocks.Length);
 
+            // 把数据装填进map
+            m_BlockMap = new Dictionary<string, BlockData>(m_Blocks.Length);
             for (int i = 0; i < m_Blocks.Length; i++)
             {
                 BlockData block = m_Blocks[i];
@@ -87,23 +94,30 @@ namespace Minecraft.Configurations
 
         private IEnumerator InitBlockMeshes()
         {
+            // 这个ScriptableObject本身只存储的对应table的GUID, 这里才正式加载进来
             AsyncAsset json = AssetManager.Instance.LoadAsset<TextAsset>(m_BlockMeshTableJson);
             yield return json;
 
+            // json解密成AssetPtr[]类型
             m_BlockMeshPtrs = JsonConvert.DeserializeObject<AssetPtr[]>(json.GetAssetAs<TextAsset>().text);
             m_BlockMeshes = new BlockMesh[m_BlockMeshPtrs.Length];
 
+            // 加载BlockMesh[]
             AsyncAsset[] meshes = AssetManager.Instance.LoadAssets<BlockMesh>(m_BlockMeshPtrs);
+            // 等待所有meshes都加载完毕, 然后再装载进入m_BlockMeshes中
             yield return AsyncAsset.WaitAll(m_BlockMeshes, meshes);
         }
 
         private IEnumerator InitTextures()
         {
+            // 这个ScriptableObject本身只存储的对应table的GUID, 这里才正式加载进来
             AsyncAsset json = AssetManager.Instance.LoadAsset<TextAsset>(m_BlockTextureTableJson);
             yield return json;
 
-            m_TexturePtrs = JsonConvert.DeserializeObject<AssetPtr[]>(json.GetAssetAs<TextAsset>().text);
+            // json解密成AssetPtr[]类型
+            AssetPtr[] m_TexturePtrs = JsonConvert.DeserializeObject<AssetPtr[]>(json.GetAssetAs<TextAsset>().text);
 
+            // 加载第一个图, 用来创建texArray
             AsyncAsset firstTexAsset = AssetManager.Instance.LoadAsset<Texture2D>(m_TexturePtrs[0]);
             yield return firstTexAsset;
 
@@ -117,6 +131,7 @@ namespace Minecraft.Configurations
                 filterMode = firstTex.filterMode
             };
 
+            // 把图片都塞进texArray
             for (int i = 0; i < m_TexturePtrs.Length; i++)
             {
                 AsyncAsset texture = AssetManager.Instance.LoadAsset<Texture2D>(m_TexturePtrs[i]);
@@ -125,18 +140,22 @@ namespace Minecraft.Configurations
                 Graphics.CopyTexture(texture.GetAssetAs<Texture2D>(), 0, 0, m_TextureArray, i, 0);
             }
 
+            // m_TexturePtrs用不到了, 直接释放掉
             AssetManager.Instance.UnloadAssets(m_TexturePtrs);
             m_TexturePtrs = null;
         }
 
         private IEnumerator InitMaterials()
         {
+            // 这个ScriptableObject本身只存储的对应table的GUID, 这里才正式加载进来
             AsyncAsset json = AssetManager.Instance.LoadAsset<TextAsset>(m_BlockMaterialTableJson);
             yield return json;
 
+            // json解密成AssetPtr[]类型
             m_MaterialPtrs = JsonConvert.DeserializeObject<AssetPtr[]>(json.GetAssetAs<TextAsset>().text);
             m_Materials = new Material[m_MaterialPtrs.Length];
 
+            // 加载材质球
             AsyncAsset[] materials = AssetManager.Instance.LoadAssets<Material>(m_MaterialPtrs);
             yield return AsyncAsset.WaitAll(m_Materials, materials);
         }

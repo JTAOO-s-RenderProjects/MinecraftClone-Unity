@@ -154,7 +154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AssetCatalogPath: 2
-  m_EnableLog: 0
+  m_EnableLog: 1
   m_LogAssetCatalog: 1
 --- !u!4 &160148887
 Transform:

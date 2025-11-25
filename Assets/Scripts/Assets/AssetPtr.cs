@@ -3,6 +3,9 @@ using Minecraft.Lua;
 
 namespace Minecraft.Assets
 {
+    /// <summary>
+    /// jtaoo: 存储asset的GUID
+    /// </summary>
     [Serializable]
     public class AssetPtr : IEquatable<AssetPtr>, ILuaCallCSharp
     {
