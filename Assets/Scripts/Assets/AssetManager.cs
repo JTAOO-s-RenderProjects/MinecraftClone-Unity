@@ -124,6 +124,8 @@ namespace Minecraft.Assets
 #if UNITY_EDITOR
         private IAssetBundle LoadAssetBundleInEditor(string name, AssetBundleInfo info)
         {
+            LogMessage("LoadAssetBundleInEditor(), name: " + name);
+
             IAssetBundle[] dependencies = LoadAssetBundleDependencies(info.Dependencies);
             IAssetBundle ab = new EditorAssetBundle(name, dependencies);
             LogMessage("Create Editor AssetBundle: '", name, "'.");
@@ -133,6 +135,8 @@ namespace Minecraft.Assets
 
         private IAssetBundle LoadAssetBundleFromFile(string name, AssetBundleInfo info)
         {
+            LogMessage("LoadAssetBundleFromFile(), name: " + name);
+
             AssetBundleCreateRequest request = CreateAssetBundleRequest(info.FileName);
             IAssetBundle[] dependencies = LoadAssetBundleDependencies(info.Dependencies);
             IAssetBundle ab = new RuntimeAssetBundle(name, request, dependencies);
@@ -198,12 +202,14 @@ namespace Minecraft.Assets
             m_CreatedAssets.Add(name, asset);
             m_LoadingAssets.Add(asset);
 
-            LogMessage("Create Asset: '", name, "'.");
+            LogMessage("CreateAssetFromAssetBundle(), Create Asset: '", name, "'.");
             return asset;
         }
 
         public AsyncAsset LoadAsset(string name, Type type)
         {
+            LogMessage("Start try load asset: " + name + " , type: " + type.ToString());
+
             if (!m_Catalog.Assets.TryGetValue(name, out AssetInfo assetInfo))
             {
                 throw new FileNotFoundException("Can not find Asset: " + name);

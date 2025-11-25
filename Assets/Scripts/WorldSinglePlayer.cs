@@ -135,6 +135,7 @@ namespace Minecraft
 
         IEnumerator EnablePlayer()
         {
+            // jtaoo: 5秒后启动玩家控制器
             yield return new WaitForSeconds(5);
             GameObject.FindGameObjectWithTag("Player").GetComponent<Minecraft.Entities.PlayerEntity>().enabled = true;
         }

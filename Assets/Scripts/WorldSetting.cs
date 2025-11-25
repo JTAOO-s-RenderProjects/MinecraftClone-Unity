@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Minecraft
 {
+    /// <summary>
+    /// jtaoo: 世界初始参数
+    /// </summary>
     [Serializable]
     [XLua.LuaCallCSharp]
     public class WorldSetting

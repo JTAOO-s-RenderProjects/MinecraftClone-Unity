@@ -90,6 +90,11 @@ namespace Minecraft
 
 
 
+        /// <summary>
+        /// jtaoo: 世界启动
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         private IEnumerator Start()
         {
             if (Active != null)
@@ -100,6 +105,7 @@ namespace Minecraft
             // temp
             ActiveSetting = new WorldSetting
             {
+                // jtaoo: 世界初始化 如果没设置seed 给一个随机seed 
                 Seed = m_Seed == 0 ? (Process.GetCurrentProcess().Id + DateTime.Now.GetHashCode()) : m_Seed
             };
 
@@ -108,10 +114,13 @@ namespace Minecraft
                 throw new InvalidOperationException("Cannot create a world without World.ActiveSetting!");
             }
 
-            AsyncAsset blockTable = AssetManager.Instance.LoadAsset<BlockTable>(m_BlockTableAssetName);
-            AsyncAsset biomeTable = AssetManager.Instance.LoadAsset<BiomeTable>(m_BiomeTableAssetName);
-            AsyncAsset worldGenPipeline = AssetManager.Instance.LoadAsset<WorldGeneratePipeline>(m_WorldGenPipelineAssetName);
+            // 这里注意 AssetManager会在AssetManagerUpdater中自动创建
+            // TODO: 将这些自动创建变为代码顺序可控
+            AsyncAsset blockTable = AssetManager.Instance.LoadAsset<BlockTable>(m_BlockTableAssetName); // 方块
+            AsyncAsset biomeTable = AssetManager.Instance.LoadAsset<BiomeTable>(m_BiomeTableAssetName); // 生物群系
+            AsyncAsset worldGenPipeline = AssetManager.Instance.LoadAsset<WorldGeneratePipeline>(m_WorldGenPipelineAssetName); // 世界生成管线
 
+            // 一个个全部初始化
             yield return blockTable;
             m_BlockTable = blockTable.GetAssetAs<BlockTable>();
             yield return BlockDataTable.Initialize();
@@ -129,12 +138,14 @@ namespace Minecraft
             RenderingManager.Initialize(this);
             m_EntityManager.Initialize();
 
+            // 执行子类的初始化函数
             yield return OnInitialize();
 
             m_RWAccessor = new DefaultWorldRWAccessor(this);
             m_Initialized = true;
             Active = this;
 
+            // Lua
             LuaManager.ExecuteLuaScripts();
             BlockDataTable.LoadBlockBehavioursInLua(this);
         }
