@@ -224,6 +224,12 @@ namespace Minecraft.Rendering
             return MapLight01(block.LightValue);
         }
 
+        /// <summary>
+        /// jtaoo: 计算光线透过某个block之后剩下的能量
+        /// </summary>
+        /// <param name="light"></param>
+        /// <param name="block"></param>
+        /// <returns></returns>
         public static int GetBlockedLight(int light, BlockData block)
         {
             return Mathf.Clamp(light - block.LightOpacity, 0, MaxLight);
