@@ -59,15 +59,10 @@ namespace Minecraft.ScriptableWorldGeneration
                 GenLayers = CreateGenLayers(seed)
             };
 
-            // 一个5*5的权重矩阵, 依照距离获得权重
             InitBiomeWeights(helper.BiomeWeights);
             return helper;
         }
 
-        /// <summary>
-        /// jtaoo: 一个5*5的权重矩阵, 依照距离获得权重
-        /// </summary>
-        /// <param name="weights"></param>
         protected virtual void InitBiomeWeights(float[,] weights)
         {
             for (int i = -2; i <= 2; i++)
@@ -81,9 +76,6 @@ namespace Minecraft.ScriptableWorldGeneration
 
         protected virtual StatelessGenLayer CreateGenLayers(int seed)
         {
-            // jtaoo: 构建layer链
-            // zoom层是什么意思?
-
             StatelessGenLayer addIsland0 = new IslandLayer(seed, null);
             StatelessGenLayer zoomed0 = new ZoomLayer(seed, addIsland0);
 
@@ -107,28 +99,17 @@ namespace Minecraft.ScriptableWorldGeneration
         }
 
 
-        /// <summary>
-        /// jtaoo: 地形生成器一个个layer调用
-        /// </summary>
-        /// <param name="chunk"></param>
         public virtual void GenerateChunk(Chunk chunk)
         {
-            Debug.Log($"GenerateChunk()  ({chunk.Position.X}, {chunk.Position.Z})");
-
-            // 建立一个空的数据
             GenerationContext context = GetGenerationContext();
-            // 从chunk中解放一些数据对象出来
             chunk.GetRawDataNoCheck(out ChunkPos transform, out IWorld world, out BlockData[,,] blocks, out Quaternion[,,] rotations, out NibbleArray skyLights, out byte[,] heightMap);
-            // 所有旋转都归零
             InitializeBlockRotations(rotations);
 
-            // 主地形layer生成器
             m_TerrainGenerator.Generate(world, transform, blocks, rotations, heightMap, m_GenHelper, context);
 
             // 生成洞穴
             if (UseCaves)
             {
-                // cave layer生成器
                 m_CaveGenerator.Generate(world, transform, blocks, rotations, heightMap, m_GenHelper, context);
             }
 
