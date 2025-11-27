@@ -107,7 +107,14 @@ namespace Minecraft
             return (int)(sqrDistX - sqrDistY);
         }
 
-
+        /// <summary>
+        /// jtaoo: 初始化blocks的全局光照
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="world"></param>
+        /// <param name="blocks"></param>
+        /// <param name="skyLights"></param>
+        /// <param name="heightMap"></param>
         protected static void InitLightsAndColumns(ChunkPos pos, IWorld world, BlockData[,,] blocks, NibbleArray skyLights, byte[,] heightMap)
         {
             for (int x = 0; x < ChunkWidth; x++)
@@ -115,12 +122,17 @@ namespace Minecraft
                 for (int z = 0; z < ChunkWidth; z++)
                 {
                     int topVisibleBlockY = -1;
+                    // 该XZ坐标的天光强度初始
                     int skyLight = SkyLight;
 
+                    // jtaoo: 从block的顶面向底面传递
+                    // XZ天光强度沿着Y轴只向下传递
+                    // 但是这样光无法进入洞窟...
                     for (int y = ChunkHeight - 1; y >= 0; y--)
                     {
                         BlockData block = blocks[x, y, z];
 
+                        // jtaoo: 计算地表高度
                         if (topVisibleBlockY == -1 && (!block.HasFlag(BlockFlags.AlwaysInvisible) || y == 0))
                         {
                             topVisibleBlockY = y;
